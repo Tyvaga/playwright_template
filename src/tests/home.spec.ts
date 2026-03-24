@@ -1,8 +1,8 @@
-import { test } from '../fixtures/baseFixture';
+import { test } from "../fixtures/baseFixture";
 
-test('user can visit the home page and see the header', async ({
+test("user can visit the home page and see the header", async ({
   homeWorkflow,
-  homeAssertion
+  homeAssertion,
 }) => {
   await homeWorkflow.visitHome();
   await homeAssertion.headerIsVisible();

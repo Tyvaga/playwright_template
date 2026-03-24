@@ -1,16 +1,260 @@
-Test Runner
+### Folder Structure
+```
+src/
+└── app/
+    ├── pages/          # UI surfaces (atomic actions)
+    ├── services/       # UI logic (waits, branching, multi-step operations)
+    ├── workflows/      # Behaviour orchestration
+    ├── assertions/     # Reusable validation logic
+    └── util/           # Optional helpers
+fixtures/
+└── baseFixture.ts      # Dependency injection + registry wiring
+tests/
+└── *.spec.ts           # Narrative-driven tests
+```
 
-<!-- 
-Information about how to run the tests. What commands can be used and results saved.
--->
+### Overview
+```
+Test
+ ├──→ Workflow ───→ Page
+ ├──→ Service  ───→ Page
+ ├──→ Assertions → Page
+ └──→ Page            
+```
 
-Tags
+### Pages - UI Surface Layer
+Pages represent the raw UI of the application.
 
-<!-- To run tagged tests from the suite, use the --grep flag with the desired tag in your build command. For example: npx playwright --grep @smoke This will run all tests annotated with the @smoke tag.
+They contain:
 
-Tags can be added to either the Describe or Test block like so: { tag: ['@add', '@multiple', '@tags'] } -->
+- Element locators
+- Atomic UI actions (click, type, open, hover)
+- No business logic
+- No branching
+- No waits (except minimal UI‑state waits if absolutely required)
 
-Current Tags: <!-- List any current tags in use -->
+Example:
+```
+export class HomePage {
+  constructor(public readonly page: Page) {}
 
-Annotations 
-<!-- can be added to describe or test blocks to give more metadata for a particular test. For example , failing tests can be marked with a bug issue and linked to Jira: { tag: [], annotation: { type: 'bug issue', description: 'jira_link' } } -->
+  async open() {
+    await this.page.goto('/');
+  }
+
+  async clickWelcomeBanner() {
+    await this.page.getByTestId('welcome-banner').click();
+  }
+
+  getHeader() {
+    return this.page.getByRole('heading', { level: 1 });
+  }
+}
+```
+Pages are intentionally simple — they expose capabilities, not behaviour.
+
+### Services — UI Logic Layer
+Services sit one level above pages.
+They combine multiple UI steps into a single intention‑driven action.
+
+They contain:
+
+- Wait logic
+- Branching
+- Multi‑step UI operations
+- Domain‑to‑UI mapping
+- Reusable UI logic
+
+Example:
+```
+export class NavigationService {
+  constructor(
+    public readonly page: Page,
+    private readonly homePage: HomePage
+  ) {}
+
+  async goToHome() {
+    await this.homePage.open();
+    await this.waitForLoader();
+  }
+
+  async clickBannerAndWait() {
+    await this.homePage.clickWelcomeBanner();
+    await this.waitForLoader();
+  }
+
+  private async waitForLoader() {
+    const loader = this.page.getByTestId('loading-indicator');
+    await loader.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+}
+```
+Services ensure workflows or tests remain clean and expressive.
+
+### Workflows — Behaviour Layer
+
+Workflows orchestrate multi‑step behaviour across pages and services.
+
+They express intent, not UI mechanics.
+
+Example:
+```
+export class HomeWorkflow {
+  constructor(private readonly navigation: NavigationService) {}
+
+  async visitHome() {
+    await this.navigation.goToHome();
+    await this.navigation.clickBannerAndWait();
+  }
+}
+```
+Workflows keep tests readable and narrative‑driven.
+
+### Assertions — Validation Layer
+
+Assertions contain reusable validation logic.
+
+They are used when:
+- A validation is multi‑step
+- A validation is domain‑specific
+- A validation is reused across tests
+
+Example:
+```
+export class HomeAssertion {
+  constructor(private readonly homePage: HomePage) {}
+
+  async headerIsVisible() {
+    await expect(this.homePage.getHeader()).toBeVisible();
+  }
+}
+```
+Simple one‑liners can stay in the test.
+
+### Dependency Injection via Base Fixture
+
+The baseFixture.ts file is the central wiring layer of the framework.
+
+It:
+- Registers all Pages, Services, Workflows, Assertions
+- Injects dependencies automatically
+- Ensures tests only request what they need
+- Keeps setup consistent across the suite
+
+## Registry‑Driven Architecture
+```
+const pageRegistry = {
+  homePage: HomePage,
+};
+
+const serviceRegistry = {
+  navigationService: NavigationService,
+};
+
+const workflowRegistry = {
+  homeWorkflow: HomeWorkflow,
+};
+
+const assertionRegistry = {
+  homeAssertion: HomeAssertion,
+};
+```
+### Automatic Page Registration
+
+Pages are auto‑constructed using a generic mapping:
+```
+...Object.fromEntries(
+  Object.entries(pageRegistry).map(([name, PageClass]) => [
+    name,
+    async ({ page }, use) => {
+      await use(new PageClass(page));
+    },
+  ]),
+)
+```
+
+### Manual Wiring for Services, Workflows, Assertions
+
+These require explicit Dependency Injection:
+```
+navigationService: async ({ page, homePage }, use) => {
+  await use(new NavigationService(page, homePage));
+},
+
+homeWorkflow: async ({ navigationService }, use) => {
+  await use(new HomeWorkflow(navigationService));
+},
+
+homeAssertion: async ({ homePage }, use) => {
+  await use(new HomeAssertion(homePage));
+},
+```
+Example Test:
+```
+test('user can visit the home page and see the header', async ({
+  homeWorkflow,
+  homeAssertion
+}) => {
+  await homeWorkflow.visitHome();
+  await homeAssertion.headerIsVisible();
+});
+```
+This test contains:
+   - No selectors
+   - No waits
+   - No UI logic
+
+Just behaviour.
+
+## How to Add New Components
+### Add a Page
+
+    Create a file in pages/
+
+    Add atomic UI actions
+
+    Register it in pageRegistry
+
+### Add a Service
+
+    Inject the page(s) it needs
+
+    Add UI logic
+
+    Register it in serviceRegistry
+
+### Add a Workflow
+
+    Inject page(s) or service(s) it needs
+
+    Express behaviour
+
+    Register it in workflowRegistry
+
+## Add an Assertion
+
+    Inject page or service
+
+    Add validation logic
+
+    Register it in assertionRegistry
+
+## Optional Utilities
+
+The template includes commented examples for:
+
+    localEntityTracker
+
+    apiManager
+
+    cleanupEntities
+
+These are useful for:
+
+    API‑driven setup
+
+    Entity lifecycle management
+
+    Automatic cleanup
+
+They remain commented to keep the template runnable and generic.

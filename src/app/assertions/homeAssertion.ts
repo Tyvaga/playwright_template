@@ -1,5 +1,5 @@
-import { expect } from '@playwright/test';
-import { HomePage } from '../pages/homePage';
+import { expect } from "../fixtures/baseFixture";
+import { HomePage } from "../pages/homePage";
 
 export class HomeAssertion {
   constructor(private readonly homePage: HomePage) {}

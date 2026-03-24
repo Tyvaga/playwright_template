@@ -1,4 +1,4 @@
-import { NavigationService } from '../services/navigationService';
+import { NavigationService } from "../services/navigationService";
 
 export class HomeWorkflow {
   constructor(private readonly navigation: NavigationService) {}
