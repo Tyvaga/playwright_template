@@ -6,5 +6,6 @@ export class HomeAssertion {
 
   async headerIsVisible() {
     await expect(this.homePage.getHeader()).toBeVisible();
+    await expect(this.homePage.getHeader()).toHaveText("Installation");
   }
 }

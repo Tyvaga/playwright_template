@@ -10,6 +10,7 @@ cd playwright_template
 - Node.js (LTS version) + npm  
   Download: [https://nodejs.org/](https://nodejs.org/)
 - TypeScript dependencies
+
   Run in project folder:
 ```bash
 npm install -D typescript
@@ -27,9 +28,11 @@ To run the test run this command in your project folder:
 npx playwright test
 ```
 Example Output:
+
   ✓  user can visit the home page and see the header
 
   1 passed
+  
 Note: Your output will include all tests in the tests folder. Each test shows a ✓ for pass or ✗ for fail.
 
 ## Folder Structure

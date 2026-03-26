@@ -12,6 +12,6 @@ export class HomePage {
   }
 
   getHeader() {
-    return this.page.getByRole("heading", { level: 1 });
+    return this.page.getByRole("heading", { level: 1 }); // Page title is an h1 element, so we can use getByRole to find it.
   }
 }
