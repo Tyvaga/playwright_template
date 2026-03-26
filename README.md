@@ -1,3 +1,24 @@
+## Getting Started
+
+This document will help you set up Playwright, run example tests, and understand the folder structure and architecture design.
+
+### Prerequisites
+- Node.js (LTS version) + npm  
+  Download: [https://nodejs.org/](https://nodejs.org/)
+
+- TypeScript (dev dependency)
+  ```bash
+  npm install -D typescript
+  ```
+
+### Install Playwright
+Run the following commands in your project folder:
+
+```bash
+npm install -D @playwright/test   # This installs Playwright Test locally as a dev dependency.
+npx playwright install            # This installls the browsers
+```
+
 ### Folder Structure
 ```
 src/
@@ -7,10 +28,10 @@ src/
     ├── workflows/      # Behaviour orchestration
     ├── assertions/     # Reusable validation logic
     └── util/           # Optional helpers
-fixtures/
-└── baseFixture.ts      # Dependency injection + registry wiring
-tests/
-└── *.spec.ts           # Narrative-driven tests
+    fixtures/
+    └── baseFixture.ts      # Dependency injection + registry wiring
+    tests/
+    └── *.spec.ts           # Narrative-driven tests
 ```
 
 ### Overview
