@@ -32,7 +32,7 @@ Example Output:
   ✓  user can visit the home page and see the header
 
   1 passed
-  
+
 Note: Your output will include all tests in the tests folder. Each test shows a ✓ for pass or ✗ for fail.
 
 ## Folder Structure
@@ -71,7 +71,7 @@ They contain:
 - No waits (except minimal UI‑state waits if absolutely required)
 
 Example:
-```
+```ts
 export class HomePage {
   constructor(public readonly page: Page) {}
 
@@ -103,7 +103,7 @@ They contain:
 - Reusable UI logic
 
 Example:
-```
+```ts
 export class NavigationService {
   constructor(
     public readonly page: Page,
@@ -135,7 +135,7 @@ Workflows orchestrate multi‑step behaviour across pages and services.
 They express intent, not UI mechanics.
 
 Example:
-```
+```ts
 export class HomeWorkflow {
   constructor(private readonly navigation: NavigationService) {}
 
@@ -157,7 +157,7 @@ Use assertion classes when:
 - A validation is reused across multiple tests
 
 Example:
-```
+```ts
 export class HomeAssertion {
   constructor(private readonly homePage: HomePage) {}
 
@@ -180,7 +180,7 @@ It:
 - Keeps setup consistent across the suite
 
 ## Registry‑Driven Architecture
-```
+```ts
 const pageRegistry = {
   homePage: HomePage,
 };
@@ -199,7 +199,7 @@ const assertionRegistry = {
 ```
 
 ## Declare Types
-```
+```ts
 type MyFixtures = {
   // Pages
   [K in keyof typeof pageRegistry]: InstanceType<(typeof pageRegistry)[K]>;
@@ -224,7 +224,7 @@ type MyFixtures = {
 ## Automatic Page Registration
 
 Pages are auto‑constructed using a generic mapping:
-```
+```ts
   ...Object.fromEntries(
     Object.entries(pageRegistry).map(([name, PageClass]) => [
       name,
@@ -239,7 +239,7 @@ Pages are auto‑constructed using a generic mapping:
 ## Manual Wiring for Services, Workflows, Assertions
 
 These require explicit Dependency Injection:
-```
+```ts
 navigationService: async ({ page, homePage }, use) => {
   await use(new NavigationService(page, homePage));
 },
@@ -252,8 +252,8 @@ homeAssertion: async ({ homePage }, use) => {
   await use(new HomeAssertion(homePage));
 },
 ```
-Example Test:
-```
+## Example Test
+```ts
 test('user can visit the home page and see the header', async ({
   homeWorkflow,
   homeAssertion
