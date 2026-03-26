@@ -7,8 +7,8 @@ export class HomePage {
     await this.page.goto("/");
   }
 
-  async clickWelcomeBanner() {
-    await this.page.getByTestId("welcome-banner").click();
+  async clickGetStarted() {
+    await this.page.getByRole("link", { name: "Get started" }).click();
   }
 
   getHeader() {

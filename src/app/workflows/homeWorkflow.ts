@@ -5,6 +5,6 @@ export class HomeWorkflow {
 
   async visitHome() {
     await this.navigation.goToHome();
-    await this.navigation.clickBannerAndWait();
+    await this.navigation.clickButtonAndWait();
   }
 }

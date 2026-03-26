@@ -1,4 +1,4 @@
-import { test } from "../fixtures/baseFixture";
+import { test, expect } from "../fixtures/baseFixture";
 
 test("user can visit the home page and see the header", async ({
   homeWorkflow,

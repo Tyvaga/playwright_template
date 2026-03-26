@@ -12,8 +12,8 @@ export class NavigationService {
     await this.waitForLoader();
   }
 
-  async clickBannerAndWait() {
-    await this.homePage.clickWelcomeBanner();
+  async clickButtonAndWait() {
+    await this.homePage.clickGetStarted();
     await this.waitForLoader();
   }
 

@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 import { HomePage } from "../pages/homePage";
 import { NavigationService } from "../services/navigationService";
 import { HomeWorkflow } from "../workflows/homeWorkflow";
@@ -160,5 +160,6 @@ const test = base.extend<MyFixtures>({
         */
 });
 
-export { test, expect };
+export { test };
+export { expect } from "@playwright/test";
 // export type LocalEntityTracker = Map<string, { id: number; type: EntityType }>;

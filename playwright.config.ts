@@ -11,7 +11,7 @@ export default defineConfig({
     retries: 1, // Retry failed tests once
     use: {
         headless: true,
-        baseURL: 'https://example.com',
+        baseURL: 'https://playwright.dev',
         // testIdAttribute: 'data-bdd-selector', // If you want to use a custom test ID attribute
         /* Options: 'on', 'off', 'retain-on-failure', 'on-first-retry' */
         trace: 'retain-on-failure',
