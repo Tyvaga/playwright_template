@@ -6,9 +6,12 @@ This document will help you set up Playwright, run example tests, and understand
 - Node.js (LTS version) + npm  
   Download: [https://nodejs.org/](https://nodejs.org/)
 
-- TypeScript (dev dependency)
+- TypeScript Dependencies
+ Run following commands in project folder:
+
   ```bash
   npm install -D typescript
+  npm install -D @types/node
   ```
 
 ### Install Playwright

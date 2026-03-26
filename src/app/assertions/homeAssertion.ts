@@ -1,4 +1,4 @@
-import { expect } from "../fixtures/baseFixture";
+import { expect } from "../../fixtures/baseFixture";
 import { HomePage } from "../pages/homePage";
 
 export class HomeAssertion {

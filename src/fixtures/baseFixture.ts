@@ -1,8 +1,8 @@
-import { test as base, expect } from "@playwright/test";
-import { HomePage } from "../pages/homePage";
-import { NavigationService } from "../services/navigationService";
-import { HomeWorkflow } from "../workflows/homeWorkflow";
-import { HomeAssertion } from "../assertions/homeAssertion";
+import { test as base, expect, Page } from "@playwright/test";
+import { HomePage } from "../app/pages/homePage";
+import { NavigationService } from "../app/services/navigationService";
+import { HomeWorkflow } from "../app/workflows/homeWorkflow";
+import { HomeAssertion } from "../app/assertions/homeAssertion";
 
 /**
  * Registries
@@ -86,7 +86,7 @@ const test = base.extend<MyFixtures>({
   ...Object.fromEntries(
     Object.entries(pageRegistry).map(([name, PageClass]) => [
       name,
-      async ({ page }, use) => {
+      async ({ page }: { page: Page }, use: (fixture: InstanceType<typeof PageClass>) => Promise<void>) => {
         await use(new PageClass(page));
       },
       { scope: "test" },
@@ -99,8 +99,8 @@ const test = base.extend<MyFixtures>({
    * Services receive pages (and sometimes other services).
    * This is where dependency injection happens.
    */
-  navigationService: async ({ homePage }, use) => {
-    await use(new NavigationService(homePage));
+  navigationService: async ({ page, homePage }, use) => {
+    await use(new NavigationService(page, homePage));
   },
 
   /**
